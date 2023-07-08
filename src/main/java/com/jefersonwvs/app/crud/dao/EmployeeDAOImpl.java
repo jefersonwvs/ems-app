@@ -35,7 +35,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
   }
 
   @Override
-  public Employee getEmployee(int employeeId) {
+  public Employee getEmployee(Integer employeeId) {
     try {
       String sqlSelectByIdStatement = "SELECT * FROM employee WHERE id = ?";
 
@@ -112,7 +112,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
   }
 
   @Override
-  public boolean deleteEmployee(int employeeId) {
+  public boolean deleteEmployee(Integer employeeId) {
     try {
       String sqlDeleteStatement = "DELETE FROM employee WHERE id = ?";
 

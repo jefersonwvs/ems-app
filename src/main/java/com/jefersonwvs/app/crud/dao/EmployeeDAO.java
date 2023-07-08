@@ -10,12 +10,12 @@ public interface EmployeeDAO {
   boolean addEmployee(Employee employee);
 
   // Read
-  Employee getEmployee(int employeeId);
+  Employee getEmployee(Integer employeeId);
   List<Employee> getAllEmployees();
 
   // Update
   boolean updateEmployee(Employee employee);
 
   // Delete
-  boolean deleteEmployee(int employeeId);
+  boolean deleteEmployee(Integer employeeId);
 }

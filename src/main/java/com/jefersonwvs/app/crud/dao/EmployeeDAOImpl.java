@@ -5,6 +5,8 @@ import com.jefersonwvs.app.crud.db.DBConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeDAOImpl implements EmployeeDAO {
@@ -39,7 +41,29 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
   @Override
   public List<Employee> getAllEmployees() {
-    return null;
+    try {
+      String sqlSelectAllStatement = "SELECT * FROM employee";
+      PreparedStatement preparedStatement = connection.prepareStatement(sqlSelectAllStatement);
+
+      ResultSet resultSet = preparedStatement.executeQuery();
+      List<Employee> employees = new ArrayList<>();
+
+      while (resultSet.next()) {
+        Employee employee = new Employee();
+        employee.setId(resultSet.getInt("id"));
+        employee.setName(resultSet.getString("name"));
+        employee.setEmail(resultSet.getString("email"));
+        employee.setPhone(resultSet.getString("phone"));
+        employee.setAddress(resultSet.getString("address"));
+
+        employees.add(employee);
+      }
+
+      return employees;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   @Override
@@ -91,8 +115,9 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     employee.setAddress("Konohagakure");
 
     EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-    // System.out.println(employeeDAO.addEmployee(employee));
-    // System.out.println(employeeDAO.updateEmployee(employee));
-    System.out.println(employeeDAO.deleteEmployee(3));
+    // System.out.println(employeeDAO.addEmployee(employee));     // Create
+    System.out.println(employeeDAO.getAllEmployees());            // Read
+    // System.out.println(employeeDAO.updateEmployee(employee));  // Update
+    // System.out.println(employeeDAO.deleteEmployee(3));         // Delete
   }
 }

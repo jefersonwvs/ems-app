@@ -44,7 +44,24 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
   @Override
   public boolean updateEmployee(Employee employee) {
-    return false;
+    try {
+      String sqlUpdateStatement =
+          "UPDATE employee SET name = ?, email = ?, phone = ?, address = ? WHERE id = ?";
+
+      PreparedStatement preparedStatement = connection.prepareStatement(sqlUpdateStatement);
+      preparedStatement.setString(1, employee.getName());
+      preparedStatement.setString(2, employee.getEmail());
+      preparedStatement.setString(3, employee.getPhone());
+      preparedStatement.setString(4, employee.getAddress());
+      preparedStatement.setInt(5, employee.getId());
+
+      int result = preparedStatement.executeUpdate();
+
+      return result == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+    }
   }
 
   @Override
@@ -55,12 +72,14 @@ public class EmployeeDAOImpl implements EmployeeDAO {
   // "Test"
   public static void main(String[] args) {
     Employee employee = new Employee();
-    employee.setName("Naruto Uzumaki");
-    employee.setEmail("uzumaki.naruto@konoha.com");
-    employee.setPhone("123456789");
+    employee.setId(5);
+    employee.setName("Sasuke Uchiha");
+    employee.setEmail("uchiha.sasuke@konoha.com");
+    employee.setPhone("(123) 111-2222");
     employee.setAddress("Konohagakure");
 
     EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-    System.out.println(employeeDAO.addEmployee(employee));
+    // System.out.println(employeeDAO.addEmployee(employee));
+    System.out.println(employeeDAO.updateEmployee(employee));
   }
 }

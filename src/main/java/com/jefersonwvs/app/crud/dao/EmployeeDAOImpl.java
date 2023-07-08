@@ -66,7 +66,19 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
   @Override
   public boolean deleteEmployee(int employeeId) {
-    return false;
+    try {
+      String sqlDeleteStatement = "DELETE FROM employee WHERE id = ?";
+
+      PreparedStatement preparedStatement = connection.prepareStatement(sqlDeleteStatement);
+      preparedStatement.setInt(1, employeeId);
+
+      int result = preparedStatement.executeUpdate();
+
+      return result == 1;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+    }
   }
 
   // "Test"
@@ -80,6 +92,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     EmployeeDAO employeeDAO = new EmployeeDAOImpl();
     // System.out.println(employeeDAO.addEmployee(employee));
-    System.out.println(employeeDAO.updateEmployee(employee));
+    // System.out.println(employeeDAO.updateEmployee(employee));
+    System.out.println(employeeDAO.deleteEmployee(3));
   }
 }

@@ -77,7 +77,24 @@ public class EmployeeController extends HttpServlet {
 
   private void getAllEmployees(HttpServletRequest request, HttpServletResponse response) {}
 
-  private void updateEmployee(HttpServletRequest request, HttpServletResponse response) {}
+  private void updateEmployee(HttpServletRequest request, HttpServletResponse response) {
+    Employee updatedEmployee = EmployeeController.getEmployeeFromRequest(request);
+    System.out.println("updateEmployee method invoked, employee details ==> " + updatedEmployee);
+    boolean result = employeeDAO.updateEmployee(updatedEmployee);
+    System.out.println(
+        "Employee \""
+            + updatedEmployee.getName()
+            + "\" was "
+            + (!result ? "not " : "")
+            + "updated");
+
+    RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
+    try {
+      dispatcher.forward(request, response);
+    } catch (ServletException | IOException e) {
+      e.printStackTrace();
+    }
+  }
 
   private void deleteEmployee(HttpServletRequest request, HttpServletResponse response) {}
 

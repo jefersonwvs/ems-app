@@ -4,6 +4,7 @@ import com.jefersonwvs.app.crud.beans.Employee;
 import com.jefersonwvs.app.crud.dao.EmployeeDAO;
 import com.jefersonwvs.app.crud.dao.EmployeeDAOImpl;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -75,7 +76,18 @@ public class EmployeeController extends HttpServlet {
 
   private void getEmployee(HttpServletRequest request, HttpServletResponse response) {}
 
-  private void getAllEmployees(HttpServletRequest request, HttpServletResponse response) {}
+  private void getAllEmployees(HttpServletRequest request, HttpServletResponse response) {
+    System.out.println("getAllEmployees method invoked");
+    List<Employee> employees = employeeDAO.getAllEmployees();
+    System.out.println("Employees list size ==> " + employees.size());
+
+    RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
+    try {
+      dispatcher.forward(request, response);
+    } catch (ServletException | IOException e) {
+      e.printStackTrace();
+    }
+  }
 
   private void updateEmployee(HttpServletRequest request, HttpServletResponse response) {
     Employee updatedEmployee = EmployeeController.getEmployeeFromRequest(request);

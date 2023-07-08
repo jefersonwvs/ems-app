@@ -36,7 +36,30 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
   @Override
   public Employee getEmployee(int employeeId) {
-    return null;
+    try {
+      String sqlSelectByIdStatement = "SELECT * FROM employee WHERE id = ?";
+
+      PreparedStatement preparedStatement = connection.prepareStatement(sqlSelectByIdStatement);
+      preparedStatement.setInt(1, employeeId);
+
+      ResultSet resultSet = preparedStatement.executeQuery();
+      Employee employee = null;
+
+      if (resultSet.next()) {
+        employee = new Employee();
+        employee.setId(resultSet.getInt("id"));
+        employee.setName(resultSet.getString("name"));
+        employee.setEmail(resultSet.getString("email"));
+        employee.setPhone(resultSet.getString("phone"));
+        employee.setAddress(resultSet.getString("address"));
+      }
+
+      return employee;
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   @Override
@@ -116,7 +139,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     EmployeeDAO employeeDAO = new EmployeeDAOImpl();
     // System.out.println(employeeDAO.addEmployee(employee));     // Create
-    System.out.println(employeeDAO.getAllEmployees());            // Read
+    // System.out.println(employeeDAO.getEmployee(10));           // Read
+    // System.out.println(employeeDAO.getAllEmployees());
     // System.out.println(employeeDAO.updateEmployee(employee));  // Update
     // System.out.println(employeeDAO.deleteEmployee(3));         // Delete
   }

@@ -12,19 +12,19 @@ public class DBConnection {
   private static Connection connection = null;
 
   public static Connection getConnection() {
-    System.out.println("Start connection");
+    System.out.println("[APP LOG] Starting DB connection...");
     try {
       Class.forName("com.mysql.cj.jdbc.Driver");
       connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
       if (connection != null) {
-        System.out.println("Connected!");
+        System.out.println("[APP LOG] Connected to the DB!");
         return connection;
       } else {
-        System.out.println("Connection issue!");
+        System.out.println("[APP LOG] Problem connecting to the database!");
         return null;
       }
     } catch (Exception e) {
-      System.out.println("Exception in DB Connection: " + e.getMessage());
+      System.out.println("[APP LOG] Exception when connecting to DB: " + e.getMessage());
       e.printStackTrace();
       return null;
     }

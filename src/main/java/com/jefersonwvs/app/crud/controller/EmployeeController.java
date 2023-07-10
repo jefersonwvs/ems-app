@@ -33,10 +33,10 @@ public class EmployeeController extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    System.out.println("Employee controller, doPost method invoked");
+    System.out.println("[APP LOG] Employee controller doPost method invoked");
 
     String action = request.getServletPath();
-    System.out.println("doPost action ==> " + action);
+    System.out.println("[APP LOG] doPost action: " + action);
 
     switch (action) {
       case "/add":
@@ -61,10 +61,15 @@ public class EmployeeController extends HttpServlet {
 
   private void addNewEmployee(HttpServletRequest request, HttpServletResponse response) {
     Employee newEmployee = EmployeeController.getEmployeeFromRequest(request);
-    System.out.println("addNewEmployee method invoked, employee details ==> " + newEmployee);
+    System.out.println(
+        "[APP LOG] addNewEmployee method invoked - employee details: " + newEmployee);
     boolean result = employeeDAO.addEmployee(newEmployee);
     System.out.println(
-        "Employee \"" + newEmployee.getName() + "\" was " + (!result ? "not " : "") + "added");
+        "[APP LOG] Employee \""
+            + newEmployee.getName()
+            + "\" was "
+            + (!result ? "not " : "")
+            + "added");
 
     RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
     try {
@@ -76,10 +81,14 @@ public class EmployeeController extends HttpServlet {
 
   private void getEmployee(HttpServletRequest request, HttpServletResponse response) {
     Integer employeeId = EmployeeController.getEmployeeFromRequest(request).getId();
-    System.out.println("getEmployee method invoked, employee details ==> ID " + employeeId);
+    System.out.println("[APP LOG] getEmployee method invoked - employee details: ID " + employeeId);
     Employee foundEmployee = employeeDAO.getEmployee(employeeId);
     System.out.println(
-        "Employee [" + employeeId + "] was " + ((foundEmployee == null) ? "not " : "") + "found");
+        "[APP LOG] Employee ["
+            + employeeId
+            + "] was "
+            + ((foundEmployee == null) ? "not " : "")
+            + "found");
 
     RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
     try {
@@ -90,9 +99,9 @@ public class EmployeeController extends HttpServlet {
   }
 
   private void getAllEmployees(HttpServletRequest request, HttpServletResponse response) {
-    System.out.println("getAllEmployees method invoked");
+    System.out.println("[APP LOG] getAllEmployees method invoked");
     List<Employee> employees = employeeDAO.getAllEmployees();
-    System.out.println("Employees list size ==> " + employees.size());
+    System.out.println("[APP LOG] Employees list size: " + employees.size());
 
     RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
     try {
@@ -104,10 +113,11 @@ public class EmployeeController extends HttpServlet {
 
   private void updateEmployee(HttpServletRequest request, HttpServletResponse response) {
     Employee updatedEmployee = EmployeeController.getEmployeeFromRequest(request);
-    System.out.println("updateEmployee method invoked, employee details ==> " + updatedEmployee);
+    System.out.println(
+        "[APP LOG] updateEmployee method invoked - employee details: " + updatedEmployee);
     boolean result = employeeDAO.updateEmployee(updatedEmployee);
     System.out.println(
-        "Employee \""
+        "[APP LOG] Employee \""
             + updatedEmployee.getName()
             + "\" was "
             + (!result ? "not " : "")
@@ -123,10 +133,15 @@ public class EmployeeController extends HttpServlet {
 
   private void deleteEmployee(HttpServletRequest request, HttpServletResponse response) {
     Employee deletedEmployee = EmployeeController.getEmployeeFromRequest(request);
-    System.out.println("deleteEmployee method invoked, employee details ==> " + deletedEmployee);
+    System.out.println(
+        "[APP LOG] deleteEmployee method invoked - employee details: " + deletedEmployee);
     boolean result = employeeDAO.deleteEmployee(deletedEmployee.getId());
     System.out.println(
-        "Employee [ID " + deletedEmployee.getId() + "] was " + (!result ? "not " : "") + "deleted");
+        "[APP LOG] Employee [ID "
+            + deletedEmployee.getId()
+            + "] was "
+            + (!result ? "not " : "")
+            + "deleted");
 
     RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
     try {

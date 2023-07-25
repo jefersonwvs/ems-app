@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="emsApp">
 
 <head>
   <meta charset="utf-8">
@@ -15,7 +15,50 @@
   <link rel="stylesheet" href="css/employee.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="js/employee.js"></script>
+
+  <script>
+    const app = angular.module('emsApp', []);
+    app.controller('employeeController', ['$location', '$scope', function($location, $scope) {
+
+      // Function to extract the context path from the URL
+      function extractContextPath(url) {
+        // Split the URL by '/'
+        const parts = url.split('/');
+
+        // The context path is usually the second element (index 1) in the URL
+        // If the URL has the format: http://localhost:8080/contextPath/some/path
+        // then the context path will be 'contextPath'.
+        if (parts.length >= 3) {
+          return parts[3]; // Change this index based on your URL structure
+        } else {
+          return '';
+        }
+      }
+
+      $scope.getEmployeeDetails = function(employeeId) {
+        let employeeDetails = null;
+
+        $.ajax({
+          url: extractContextPath($location.absUrl()),
+          type: 'POST',
+          data: { "employeeId": employeeId },
+          success: function(data, textStatus, jqXHR) {
+            employeeDetails = data;
+          },
+          error: function(jqXHR, textStatus, error) {
+            console.error('Error in getting employee details from server');
+          }
+        });
+
+        $scope.employee = JSON.parse(employeeDetails);
+        console.log('Employee details: ' + $scope.employee);
+
+        return $scope.employee;
+      };
+    }])
+  </script>
 
 <body>
 <div class="container">
@@ -40,10 +83,10 @@
       <thead>
       <tr>
         <th>
-                <span class="custom-checkbox">
-                  <input type="checkbox" id="selectAll">
-                  <label for="selectAll"></label>
-                </span>
+          <span class="custom-checkbox">
+            <input type="checkbox" id="selectAll">
+            <label for="selectAll"></label>
+          </span>
         </th>
         <th>Name</th>
         <th>Email</th>
@@ -56,10 +99,10 @@
       <c:forEach var="employee" items="${employees}">
         <tr>
           <td>
-                  <span class="custom-checkbox">
-                    <input type="checkbox" id="checkbox1" name="options[]" value="1">
-                    <label for="checkbox1"></label>
-                  </span>
+            <span class="custom-checkbox">
+              <input type="checkbox" id="checkbox1" name="options[]" value="1">
+              <label for="checkbox1"></label>
+            </span>
           </td>
           <td>${employee.name}</td>
           <td>${employee.email}</td>
@@ -67,7 +110,8 @@
           <td>${employee.phone}</td>
           <td>
             <a href="#editEmployeeModal" class="edit" data-toggle="modal">
-              <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+              <i class="material-icons" ng-click="getEmployeeDetails('${employee.id}')" data-toggle="tooltip"
+                 title="Edit">&#xE254;</i>
             </a>
             <a href="#deleteEmployeeModal" class="delete" data-toggle="modal">
               <i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
@@ -98,39 +142,7 @@
 <jsp:include page="addEmployeeView.jsp" />
 
 <!-- Edit Modal HTML -->
-<div id="editEmployeeModal" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form>
-        <div class="modal-header">
-          <h4 class="modal-title">Edit Employee</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label>Name</label> <input type="text" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Email</label> <input type="email" class="form-control" required>
-          </div>
-          <div class="form-group">
-            <label>Address</label>
-            <textarea class="form-control" required></textarea>
-          </div>
-          <div class="form-group">
-            <label>Phone</label>
-            <input type="text" class="form-control" required>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-          <input type="submit" class="btn btn-info" value="Save">
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<jsp:include page="updateEmployeeView.jsp" />
 
 <!-- Delete Modal HTML -->
 <div id="deleteEmployeeModal" class="modal fade">

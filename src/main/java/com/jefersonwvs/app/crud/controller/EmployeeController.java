@@ -45,15 +45,13 @@ public class EmployeeController extends HttpServlet {
       case "/get":
         getEmployee(request, response);
         break;
-      case "/list":
-        getAllEmployees(request, response);
-        break;
       case "/update":
         updateEmployee(request, response);
         break;
       case "/delete":
         deleteEmployee(request, response);
         break;
+      case "/list":
       default:
         getAllEmployees(request, response);
     }
@@ -71,8 +69,11 @@ public class EmployeeController extends HttpServlet {
             + (!result ? "not " : "")
             + "added");
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
+    List<Employee> employees = employeeDAO.getAllEmployees();
+
     try {
+      RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
+      request.setAttribute("employees", employees);
       dispatcher.forward(request, response);
     } catch (ServletException | IOException e) {
       e.printStackTrace();

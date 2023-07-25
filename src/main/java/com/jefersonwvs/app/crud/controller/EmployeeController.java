@@ -103,8 +103,9 @@ public class EmployeeController extends HttpServlet {
     List<Employee> employees = employeeDAO.getAllEmployees();
     System.out.println("[APP LOG] Employees list size: " + employees.size());
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
     try {
+      RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
+      request.setAttribute("employees", employees);
       dispatcher.forward(request, response);
     } catch (ServletException | IOException e) {
       e.printStackTrace();

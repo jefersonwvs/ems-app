@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html lang="en" ng-app="emsApp">
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -13,37 +13,22 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="css/employee.css">
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="js/employee.js"></script>
-
   <script>
     const app = angular.module('emsApp', []);
-    app.controller('employeeController', ['$location', '$scope', function($location, $scope) {
-
-      // Function to extract the context path from the URL
-      function extractContextPath(url) {
-        // Split the URL by '/'
-        const parts = url.split('/');
-
-        // The context path is usually the second element (index 1) in the URL
-        // If the URL has the format: http://localhost:8080/contextPath/some/path
-        // then the context path will be 'contextPath'.
-        if (parts.length >= 3) {
-          return parts[3]; // Change this index based on your URL structure
-        } else {
-          return '';
-        }
-      }
-
+    app.controller('employeeController', ['$scope', function($scope) {
       $scope.getEmployeeDetails = function(employeeId) {
         let employeeDetails = null;
 
         $.ajax({
-          url: extractContextPath($location.absUrl()),
+          url: '/ems-app/get',
           type: 'POST',
-          data: { "employeeId": employeeId },
+          data: { 'id': employeeId },
+          async: false,
           success: function(data, textStatus, jqXHR) {
             employeeDetails = data;
           },
@@ -53,14 +38,13 @@
         });
 
         $scope.employee = JSON.parse(employeeDetails);
-        console.log('Employee details: ' + $scope.employee);
-
         return $scope.employee;
       };
-    }])
+    }]);
   </script>
+</head>
 
-<body>
+<body ng-app="emsApp" ng-controller="employeeController">
 <div class="container">
   <div class="table-wrapper">
     <div class="table-title">

@@ -1,5 +1,6 @@
 package com.jefersonwvs.app.crud.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jefersonwvs.app.crud.beans.Employee;
 import com.jefersonwvs.app.crud.dao.EmployeeDAO;
 import com.jefersonwvs.app.crud.dao.EmployeeDAOImpl;
@@ -25,14 +26,12 @@ public class EmployeeController extends HttpServlet {
   }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) {
     doPost(request, response);
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) {
     System.out.println("[APP LOG] Employee controller doPost method invoked");
 
     String action = request.getServletPath();
@@ -68,9 +67,7 @@ public class EmployeeController extends HttpServlet {
             + "\" was "
             + (!result ? "not " : "")
             + "added");
-
     List<Employee> employees = employeeDAO.getAllEmployees();
-
     try {
       RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
       request.setAttribute("employees", employees);
@@ -90,11 +87,11 @@ public class EmployeeController extends HttpServlet {
             + "] was "
             + ((foundEmployee == null) ? "not " : "")
             + "found");
-
-    RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
     try {
-      dispatcher.forward(request, response);
-    } catch (ServletException | IOException e) {
+      ObjectMapper mapper = new ObjectMapper();
+      String employeeStr = mapper.writeValueAsString(foundEmployee);
+      response.getOutputStream().write(employeeStr.getBytes());
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
@@ -124,9 +121,10 @@ public class EmployeeController extends HttpServlet {
             + "\" was "
             + (!result ? "not " : "")
             + "updated");
-
-    RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
+    List<Employee> employees = employeeDAO.getAllEmployees();
     try {
+      RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
+      request.setAttribute("employees", employees);
       dispatcher.forward(request, response);
     } catch (ServletException | IOException e) {
       e.printStackTrace();

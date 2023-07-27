@@ -7,6 +7,7 @@ import com.jefersonwvs.app.crud.dao.EmployeeDAOImpl;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringTokenizer;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -132,19 +133,21 @@ public class EmployeeController extends HttpServlet {
   }
 
   private void deleteEmployee(HttpServletRequest request, HttpServletResponse response) {
-    Employee deletedEmployee = EmployeeController.getEmployeeFromRequest(request);
-    System.out.println(
-        "[APP LOG] deleteEmployee method invoked - employee details: " + deletedEmployee);
-    boolean result = employeeDAO.deleteEmployee(deletedEmployee.getId());
-    System.out.println(
-        "[APP LOG] Employee [ID "
-            + deletedEmployee.getId()
-            + "] was "
-            + (!result ? "not " : "")
-            + "deleted");
+    String employeeIds = request.getParameter("employeeIds");
+    StringTokenizer tokenizer = new StringTokenizer(employeeIds, ",");
 
-    RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
+    while (tokenizer.hasMoreTokens()) {
+      int employeeId = Integer.parseInt(tokenizer.nextToken());
+      System.out.println("[APP LOG] deleteEmployee method invoked - Employee ID: " + employeeId);
+      boolean result = employeeDAO.deleteEmployee(employeeId);
+      System.out.println(
+          "[APP LOG] Employee [ID " + employeeId + "] was " + (!result ? "not " : "") + "deleted");
+    }
+
+    List<Employee> employees = employeeDAO.getAllEmployees();
     try {
+      RequestDispatcher dispatcher = request.getRequestDispatcher("/employeesView.jsp");
+      request.setAttribute("employees", employees);
       dispatcher.forward(request, response);
     } catch (ServletException | IOException e) {
       e.printStackTrace();
